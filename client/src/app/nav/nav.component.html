@@ -2,7 +2,7 @@
     <div class="container">
         <a class="navbar-brand" href="#">Angular Demo</a>
 
-        @if (logedIn) {
+        @if (accountService.currentUser()) {
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
             <li class="nav-item">
                 <a class="nav-link"> Matches</a>
@@ -16,9 +16,9 @@
         </ul>
         }
 
-        @if (logedIn) {
+        @if (accountService.currentUser()) {
         <div dropdown class="dropdown">
-            <a dropdownToggle class="dropdown-togle text-light text-decoration-none">Welcome {{model.username}}</a>
+            <a dropdownToggle class="dropdown-togle text-light text-decoration-none">Welcome {{model.accountService.currentUser().username}}</a>
             <div *dropdownMenu class="dropdown-menu">
                 <a class="dropdown-item">Edit Profile</a>
                 <div class="dropdown-divider"></div>
@@ -27,7 +27,7 @@
         </div>
         }
 
-        @if (!logedIn) {
+        @if (!accountService.currentUser()) {
         <form #loginForm="ngForm" (ngSubmit)="login()" class="d-flex" autocomplete="off">
             <input name="username" [(ngModel)]="model.username" class="form-control me-2" placeholder="Username">
             <input name="password" [(ngModel)]="model.password" class="form-control me-2" placeholder="Password"
