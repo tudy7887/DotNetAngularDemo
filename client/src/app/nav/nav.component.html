@@ -1,32 +1,35 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-light">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary bg-gradient">
     <div class="container">
         <a routerLink="/" routerLinkActive="active" class="navbar-brand text-dark">Home</a>
 
-        @if (accountService.currentUser()) {
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
-            <ng-container>
-                <li class="nav-item">
-                    <a routerLink="/members" routerLinkActive="bg-primary bg-gradient" class="nav-link text-dark"> Matches</a>
-                </li>
-                <li class="nav-item">
-                    <a routerLink="/lists" routerLinkActive="bg-primary bg-gradient" class="nav-link text-dark"> Lists</a>
-                </li>
-                <li class="nav-item">
-                    <a routerLink="/messages" routerLinkActive="bg-primary bg-gradient" class="nav-link text-dark"> Messages</a>
-                </li>
-            </ng-container>
+            @if (accountService.currentUser()) {
+            <li class="nav-item">
+                <a routerLink="/members" routerLinkActive="active bg-gradient" class="nav-link text-light"> Matches</a>
+            </li>
+            <li class="nav-item">
+                <a routerLink="/lists" routerLinkActive="active bg-gradient" class="nav-link text-light"> Lists</a>
+            </li>
+            <li class="nav-item">
+                <a routerLink="/messages" routerLinkActive="active bg-gradient" class="nav-link text-light">
+                    Messages</a>
+            </li>
+            }
+            <li class="nav-item">
+                <a routerLink="/errors" routerLinkActive="active bg-gradient" class="nav-link text-light">
+                    Errors</a>
+            </li>
         </ul>
-        }
 
         @if (accountService.currentUser()) {
         <div dropdown class="dropdown">
-            <a dropdownToggle class="dropdown-togle text-dark text-decoration-none">
+            <a dropdownToggle class="dropdown-toggle text-decoration-none nav-item">
                 Welcome {{accountService.currentUser()?.username | titlecase}}
             </a>
-            <div *dropdownMenu class="dropdown-menu bg-light">
-                <a class="dropdown-item text-dark" >Edit Profile</a>
-                <div class="dropdown-divider text-dark"></div>
-                <a class="dropdown-item text-dark" (click)="logout()">Logout</a>
+            <div *dropdownMenu class="dropdown-menu bg-primary">
+                <a class="dropdown-item text">Edit Profile</a>
+                <div class="dropdown-divider text"></div>
+                <a class="dropdown-item text" (click)="logout()">Logout</a>
             </div>
         </div>
         }
@@ -36,7 +39,7 @@
             <input name="username" [(ngModel)]="model.username" class="form-control me-2" placeholder="Username">
             <input name="password" [(ngModel)]="model.password" class="form-control me-2" placeholder="Password"
                 type="password">
-            <button class="btn bg-primary bg-gradient" type="submit">Login</button>
+            <button class="btn btn-outline-light form-control text-dark" type="submit">Login</button>
         </form>
         }
     </div>

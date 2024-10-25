@@ -1,4 +1,5 @@
 using API.Extensions;
+using API.Middleware;
 
 internal class Program
 {
@@ -13,6 +14,7 @@ internal class Program
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
+        app.UseMiddleware<ExceptionMiddleware>();
         app.UseCors(x => x.AllowAnyHeader()
                           .AllowAnyMethod()
                           .WithOrigins("http://localhost:4200", "https://localhost:4200"));
