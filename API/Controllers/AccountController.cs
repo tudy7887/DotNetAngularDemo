@@ -20,14 +20,14 @@ namespace API.Controllers
             {
                 return BadRequest("Username is taken!");
             }
-
-            var user = CreateUser(registerDto);
-            context.Users.Add(user);
-            await context.SaveChangesAsync();
-            return Ok(new UserDto{
-              Username = user.UserName,
-              Token = tokenService.CreateToken(user)
-            });
+            return Ok();
+            // var user = CreateUser(registerDto);
+            // context.Users.Add(user);
+            // await context.SaveChangesAsync();
+            // return Ok(new UserDto{
+            //   Username = user.UserName,
+            //   Token = tokenService.CreateToken(user)
+            // });
         }
 
         [HttpPost("login")]
@@ -66,13 +66,14 @@ namespace API.Controllers
         private AppUser CreateUser(RegisterDto registerDto)
         {
             using var hmac = new HMACSHA512();
-            var user = new AppUser
-            {
-                UserName = registerDto.Username,
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                PasswordSalt = hmac.Key
-            };
-            return user;
+            // var user = new AppUser
+            // {
+            //     UserName = registerDto.Username,
+            //     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+            //     PasswordSalt = hmac.Key
+            // };
+            // return user;
+            return null;
         }
         private async Task<bool> UserExist(string username)
         {

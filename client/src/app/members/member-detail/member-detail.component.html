@@ -1,1 +1,58 @@
-<p>member-detail works!</p>
+@if(member){
+<div class="row">
+    <div class="col-4">
+        <div class="card bg-secondary">
+            <img src="{{member.photoUrl || '.assets/user.png'}}" alt="{{member.knownAs}}"
+                class="card-img img-thumbnail">
+            <div class="card-body bg-body">
+                <div>
+                    <strong class="text-secondary">Location:</strong>
+                    <p class="text-body">{{member.city}}, {{member.country}}</p>
+                </div>
+                <div>
+                    <strong class="text-secondary">Age:</strong>
+                    <p class="text-body">{{member.age}}</p>
+                </div>
+                <div>
+                    <strong class="text-secondary">Last Active:</strong>
+                    <p class="text-body">{{member.lastActive}}</p>
+                </div>
+                <div>
+                    <strong class="text-secondary">Member since:</strong>
+                    <p class="text-body">{{member.created}}</p>
+                </div>
+            </div>
+            <div class="card-footer bg-body">
+                <div class="btn-group d-flex">
+                    <button class="btn btn-lg btn-danger text-dark bg-gradient me-2">Like</button>
+                    <button class="btn btn-lg btn-success text-dark bg-gradient ms-2">Messages</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-8 btn-outline-secondary">
+        <tabset class="member-tabset text-body">
+            <tab heading="About {{member.knownAs}}">
+                <h4>Description</h4>
+                <p>{{member.introduction}}</p>
+                <h4>Looking for</h4>
+                <p>{{member.lookingFor}}</p>
+            </tab>
+            <tab heading="Interests">
+                <h4>Interests</h4>
+                <p>{{member.interests}}</p>
+            </tab>
+            <tab heading="Photos" #photoTab="tab">
+                @if (photoTab.active) {
+                <gallery [items]="images" class="gallery" [bullets]="true">
+                </gallery>
+                }
+            </tab>
+            <tab heading="Messages">
+                <p>to be added...</p>
+            </tab>
+        </tabset>
+    </div>
+</div>
+}
