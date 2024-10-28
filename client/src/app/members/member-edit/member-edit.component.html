@@ -69,10 +69,7 @@
                 </form>
             </tab>
             <tab heading="Edit Photos" #photoTab="tab">
-                @if (photoTab.active) {
-                <gallery [items]="images" class="gallery" [bullets]="true">
-                </gallery>
-                }
+                <app-photo-editor [member]="member" (memberChange)="onMemberChanged($event)"></app-photo-editor>
             </tab>
         </tabset>
     </div>

@@ -33,14 +33,16 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
         {
-            var user = await context.Users.FirstOrDefaultAsync(user => user.UserName.ToLower() == loginDto.Username.ToLower());
+            var user = await context.Users.Include(p => p.Photos)
+            .FirstOrDefaultAsync(user => user.UserName.ToLower() == loginDto.Username.ToLower());
             if (!AuthorizeUser(user, loginDto))
             {
                 return Unauthorized("Invalid username or password!");
             }
             return Ok(new UserDto{
               Username = user.UserName,
-              Token = tokenService.CreateToken(user)
+              Token = tokenService.CreateToken(user),
+              PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain)?.Url
             });
         }
 

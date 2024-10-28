@@ -1,0 +1,11 @@
+.main-delete:hover i {
+    -webkit-text-fill-color: rgb(45, 27, 57);
+}
+
+.upload-cancel-clear:hover span {
+    -webkit-text-fill-color: rgb(45, 27, 57);
+}
+
+.nv-file-over {
+    border-color: rgb(255, 0, 200);
+}
