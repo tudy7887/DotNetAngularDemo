@@ -1,7 +1,7 @@
 .img-thumbnail {
-    margin: 2%;
-    width: 96%;
-    height: 96%;
+    margin: 0.5%;
+    width: 99%;
+    height: 99%;
 }
 
 .card-body {
@@ -11,4 +11,8 @@
 .card-footer {
     padding: 10px 15px;
     border-top: none;
+}
+
+.like-message:hover i{
+    -webkit-text-fill-color: rgb(45, 27, 57);
 }

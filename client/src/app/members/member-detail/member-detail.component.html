@@ -1,7 +1,7 @@
 @if(member){
 <div class="row">
     <div class="col-4">
-        <div class="card bg-secondary">
+        <div class="card btn-outline-secondary">
             <img src="{{member.photoUrl || '.assets/user.png'}}" alt="{{member.knownAs}}"
                 class="card-img img-thumbnail">
             <div class="card-body bg-body">
@@ -24,8 +24,12 @@
             </div>
             <div class="card-footer bg-body">
                 <div class="btn-group d-flex">
-                    <button class="btn btn-lg btn-danger text-dark bg-gradient me-2">Like</button>
-                    <button class="btn btn-lg btn-success text-dark bg-gradient ms-2">Messages</button>
+                    <button class="btn btn-lg btn-outline-danger bg-gradient me-2 like-message">
+                        <i class="fa fa-heart text-danger"></i>
+                    </button>
+                    <button class="btn btn-lg btn-outline-success bg-gradient ms-2 like-message">
+                        <i class="fa fa-envelope text-success"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -34,13 +38,13 @@
     <div class="col-8 btn-outline-secondary">
         <tabset class="member-tabset text-body">
             <tab heading="About {{member.knownAs}}">
-                <h4>Description</h4>
+                <h4 class="text-secondary">Description</h4>
                 <p>{{member.introduction}}</p>
-                <h4>Looking for</h4>
+                <h4 class="text-secondary">Looking for</h4>
                 <p>{{member.lookingFor}}</p>
             </tab>
             <tab heading="Interests">
-                <h4>Interests</h4>
+                <h4 class="text-secondary">Interests</h4>
                 <p>{{member.interests}}</p>
             </tab>
             <tab heading="Photos" #photoTab="tab">

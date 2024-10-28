@@ -1,22 +1,22 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary bg-gradient">
     <div class="container">
-        <a routerLink="/" routerLinkActive="active" class="navbar-brand text-dark">Home</a>
+        <a routerLink="/" routerLinkActive="active" class="navbar-brand text-body">Home</a>
 
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
             @if (accountService.currentUser()) {
             <li class="nav-item">
-                <a routerLink="/members" routerLinkActive="active bg-gradient" class="nav-link text-light"> Matches</a>
+                <a routerLink="/members" routerLinkActive="active bg-gradient" class="nav-link text-body"> Matches</a>
             </li>
             <li class="nav-item">
-                <a routerLink="/lists" routerLinkActive="active bg-gradient" class="nav-link text-light"> Lists</a>
+                <a routerLink="/lists" routerLinkActive="active bg-gradient" class="nav-link text-body"> Lists</a>
             </li>
             <li class="nav-item">
-                <a routerLink="/messages" routerLinkActive="active bg-gradient" class="nav-link text-light">
+                <a routerLink="/messages" routerLinkActive="active bg-gradient" class="nav-link text-body">
                     Messages</a>
             </li>
             }
             <li class="nav-item">
-                <a routerLink="/errors" routerLinkActive="active bg-gradient" class="nav-link text-light">
+                <a routerLink="/errors" routerLinkActive="active bg-gradient" class="nav-link text-body">
                     Errors</a>
             </li>
         </ul>
@@ -27,7 +27,7 @@
                 Welcome {{accountService.currentUser()?.username | titlecase}}
             </a>
             <div *dropdownMenu class="dropdown-menu bg-primary">
-                <a class="dropdown-item text">Edit Profile</a>
+                <a routerLink="/member/edit" class="dropdown-item text">Edit Profile</a>
                 <div class="dropdown-divider text"></div>
                 <a class="dropdown-item text" (click)="logout()">Logout</a>
             </div>
