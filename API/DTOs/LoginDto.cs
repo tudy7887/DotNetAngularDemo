@@ -9,6 +9,6 @@ public class LoginDto
     public required string Username { get; set; }
     [Required]
     [StringLength(8, MinimumLength = 4)]
-    public required string? Password { get; set; }
+    public required string Password { get; set; }
 
 }

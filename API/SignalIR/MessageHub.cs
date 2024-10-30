@@ -52,23 +52,27 @@ public class MessageHub : Hub
         public async Task SendMessage(CreateMessageDto createMessageDto)
         {
             if(Context.User == null)
-                throw new Exception("Canot get username from token!");
+                throw new HubException("Canot get username from token!");
             var username = Context.User.GetUserName();
             if (username == createMessageDto.RecipientUsername.ToLower())
                 throw new HubException("You cannot send messages to yourself");
             var sender = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
+            if (sender ==  null) throw new HubException("Sender not found!");
             var recipient = await unitOfWork.UserRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
-            if (recipient == null) throw new HubException("Not found user");
+            if (recipient == null) throw new HubException("User not found!");
+            if(sender.UserName == null) throw new HubException("Can't get sender username!"); 
+            if(recipient.UserName == null) throw new HubException("Can't get user username!"); 
             var message = new Message
             {
                 Sender = sender,
                 Recipient = recipient,
-                SenderUsername = sender.UserName!,
-                RecipientUsername = recipient.UserName!,
+                SenderUsername = sender.UserName,
+                RecipientUsername = recipient.UserName,
                 Content = createMessageDto.Content
             };
             var groupName = GetGroupName(sender.UserName!, recipient.UserName!);
             var group = await unitOfWork.MessageRepository.GetMessageGroup(groupName);
+            if(group == null) throw new HubException("Group not found!");
             if (group.Connections.Any(x => x.Username == recipient.UserName))
             {
                 message.DateRead = DateTime.UtcNow;
@@ -93,7 +97,7 @@ public class MessageHub : Hub
         {
             var group = await unitOfWork.MessageRepository.GetMessageGroup(groupName);
             if(Context.User == null)
-                throw new Exception("Canot get username from token!");
+                throw new HubException("Canot get username from token!");
             var connection = new Connection(Context.ConnectionId, Context.User.GetUserName());
             if (group == null)
             {
@@ -108,9 +112,10 @@ public class MessageHub : Hub
         private async Task<Group> RemoveFromMessageGroup()
         {
             var group = await unitOfWork.MessageRepository.GetGroupForConnection(Context.ConnectionId);
+            if(group == null) throw new HubException("Group not found!");
             var connection = group.Connections.FirstOrDefault(x => x.ConnectionId == Context.ConnectionId);
             if(connection == null)
-                throw new Exception("Cannot find group connection!");
+                throw new HubException("Cannot find group connection!");
             unitOfWork.MessageRepository.RemoveConnection(connection);
             if (await unitOfWork.Complete()) return group;
             throw new HubException("Failed to remove from group");

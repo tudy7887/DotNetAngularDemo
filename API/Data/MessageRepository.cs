@@ -27,7 +27,7 @@ public class MessageRepository(DataContext context, IMapper mapper) : IMessageRe
     public async Task<Group?> GetMessageGroup(string groupName) => await context.Groups
                                                                 .Include(x => x.Connections)
                                                                 .FirstOrDefaultAsync(x => x.Name == groupName);
-    public async Task<PagedList<MessageDto>?> GetMessagesForUser(MessageParams messageParams)
+    public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
     {
         var query = context.Messages
             .OrderByDescending(m => m.MessageSent)
@@ -44,7 +44,7 @@ public class MessageRepository(DataContext context, IMapper mapper) : IMessageRe
         };
         return await PagedList<MessageDto>.CreateAsync(query, messageParams.PageNumber, messageParams.PageSize);
     }
-    public async Task<IEnumerable<MessageDto>?> GetMessageThread(string currentUsername, string recipientUsername)
+    public async Task<IEnumerable<MessageDto>> GetMessageThread(string currentUsername, string recipientUsername)
     {
         var messages = await context.Messages
             .Where(m => m.Recipient.UserName == currentUsername && m.RecipientDeleted == false

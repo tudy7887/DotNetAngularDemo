@@ -11,19 +11,19 @@ namespace API.Data;
 public class LikesRepository(DataContext context) : ILikesRepository
 {
     public async Task<UserLike?> GetUserLike(int sourceUserId, int likedUserId) => await context.Likes.FindAsync(sourceUserId, likedUserId);
-    public async Task<PagedList<LikeDto>?> GetUserLikes(LikesParams likesParams)
+    public async Task<PagedList<LikeDto>> GetUserLikes(LikesParams likesParams)
     {
         var users = context.Users.OrderBy(u => u.UserName).AsQueryable();
         var likes = context.Likes.AsQueryable();
         if (likesParams.Predicate == "liked")
         {
             likes = likes.Where(like => like.SourceUserId == likesParams.UserId);
-            users = likes.Select(like => like.LikedUser);
+            users = likes.Select(like => like.LikedUser)!;
         }
         if (likesParams.Predicate == "likedBy")
         {
             likes = likes.Where(like => like.LikedUserId == likesParams.UserId);
-            users = likes.Select(like => like.SourceUser);
+            users = likes.Select(like => like.SourceUser)!;
         }
         var likedUsers = users.Select(user => new LikeDto
         {
