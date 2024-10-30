@@ -18,7 +18,7 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
             .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
     }
-    public async Task<PagedList<MemberDto>?> GetMembersAsync(UserParams userParams)
+    public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
     {
         var query = context.Users.AsQueryable();
         query = query.Where(u => u.UserName != userParams.CurrentUsername);
@@ -41,7 +41,7 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
     public async Task<string?> GetUserGender(string username) => await context.Users
                                                                 .Where(x => x.UserName == username)
                                                                 .Select(x => x.Gender).FirstOrDefaultAsync();
-    public async Task<IEnumerable<AppUser>?> GetUsersAsync() => await context.Users
+    public async Task<IEnumerable<AppUser>> GetUsersAsync() => await context.Users
                                                                 .Include(p => p.Photos)
                                                                 .ToListAsync();
     public void Update(AppUser user) => context.Entry(user).State = EntityState.Modified;
