@@ -1,22 +1,26 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { User } from '../_models/user';
-import { map } from 'rxjs';
+import { map, ReplaySubject } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { PresenceService } from './presence.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
   private http = inject(HttpClient);
-  baseUrl = environment.apiUrl;
+  private presence = inject(PresenceService);
   currentUser = signal<User | null>(null);
+  baseUrl = environment.apiUrl;
+  
 
   login(model: any) {
     return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
       map(user => {
         if (user) {
           this.setCurrentUser(user);
+          this.presence.createHubConnection(user);
         }
       })
     );
@@ -27,6 +31,7 @@ export class AccountService {
       map(user => {
         if (user) {
           this.setCurrentUser(user);
+          this.presence.createHubConnection(user);
         }
         return user;
       })
@@ -34,12 +39,19 @@ export class AccountService {
   }
 
   setCurrentUser(user: User){
+    user.roles = [];
+    const roles = this.getDecodedToken(user.token).role;
+    Array.isArray(roles) ? user.roles = roles : user.roles.push(roles);
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUser.set(user);
   }
 
   logout() {
     localStorage.removeItem('user');
-    this.currentUser.set(null);
+    this.presence.stopHubConnection();
+  }
+
+  getDecodedToken(token: string) {
+    return JSON.parse(atob(token.split('.')[1]));
   }
 }
