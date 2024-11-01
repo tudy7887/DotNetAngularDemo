@@ -4,28 +4,34 @@ using System.Security.Claims;
 using System.Text;
 using API.Entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Services;
 
-public class TokenService(IConfiguration config) : ITokenService
+public class TokenService : ITokenService
 {
-    string ITokenService.CreateToken(AppUser user)
+    private readonly SymmetricSecurityKey key;
+    private readonly UserManager<AppUser> userManager;
+    public TokenService(IConfiguration config, UserManager<AppUser> userManager)
     {
-        var tokenKey = config["TokenKey"] ?? throw new Exception("Cannot access TokenKey!");
-        if(tokenKey.Length < 64)
+        this.userManager = userManager;
+        key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]!));
+    }
+    public async Task<string> CreateToken(AppUser user)
+    {
+        var claims = new List<Claim>
         {
-            throw new Exception("TokenKey needs to be longer!");
-        }
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
-        var claims = new List<Claim>{
-            new Claim(ClaimTypes.NameIdentifier, user.UserName)
+            new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName!),
         };
+        var roles = await userManager.GetRolesAsync(user);
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddDays(7),
+            Expires = DateTime.Now.AddDays(7),
             SigningCredentials = creds
         };
         var tokenHandler = new JwtSecurityTokenHandler();
