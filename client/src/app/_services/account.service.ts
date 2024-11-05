@@ -1,26 +1,24 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { User } from '../_models/user';
-import { map, ReplaySubject } from 'rxjs';
+import { map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { PresenceService } from './presence.service';
+import { LikesService } from './likes.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
   private http = inject(HttpClient);
-  private presence = inject(PresenceService);
-  currentUser = signal<User | null>(null);
+  private likesService = inject(LikesService);
   baseUrl = environment.apiUrl;
-  
+  currentUser = signal<User | null>(null);
 
   login(model: any) {
     return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
       map(user => {
         if (user) {
           this.setCurrentUser(user);
-          this.presence.createHubConnection(user);
         }
       })
     );
@@ -31,7 +29,6 @@ export class AccountService {
       map(user => {
         if (user) {
           this.setCurrentUser(user);
-          this.presence.createHubConnection(user);
         }
         return user;
       })
@@ -39,19 +36,13 @@ export class AccountService {
   }
 
   setCurrentUser(user: User){
-    user.roles = [];
-    const roles = this.getDecodedToken(user.token).role;
-    Array.isArray(roles) ? user.roles = roles : user.roles.push(roles);
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUser.set(user);
+    this.likesService.getLikeIds();
   }
 
   logout() {
     localStorage.removeItem('user');
-    this.presence.stopHubConnection();
-  }
-
-  getDecodedToken(token: string) {
-    return JSON.parse(atob(token.split('.')[1]));
+    this.currentUser.set(null);
   }
 }

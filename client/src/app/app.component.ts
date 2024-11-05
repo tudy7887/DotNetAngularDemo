@@ -4,8 +4,6 @@ import { NavComponent } from "./nav/nav.component";
 import { AccountService } from './_services/account.service';
 import { HomeComponent } from "./home/home.component";
 import { NgxSpinnerComponent } from 'ngx-spinner';
-import { User } from './_models/user';
-import { PresenceService } from './_services/presence.service';
 
 @Component({
   selector: 'app-root',
@@ -16,17 +14,15 @@ import { PresenceService } from './_services/presence.service';
 })
 export class AppComponent implements OnInit {
   private accountService = inject(AccountService);
-  private presence = inject(PresenceService);
 
   ngOnInit(): void {
     this.setCurrentUser();
   }
 
   setCurrentUser(){
-    const user: User = JSON.parse(localStorage.getItem('user')!);
-    if (user) {
-      this.accountService.setCurrentUser(user);
-      this.presence.createHubConnection(user);
-    }
+    const userString = localStorage.getItem('user');
+    if (!userString) return;
+    const user = JSON.parse(userString);
+    this.accountService.currentUser.set(user);
   }
 }

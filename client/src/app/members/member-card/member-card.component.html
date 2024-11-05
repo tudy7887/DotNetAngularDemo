@@ -8,7 +8,7 @@
                 </button>
             </li>
             <li class="list-inline-item">
-                <button class="btn btn-primary bg-gradient">
+                <button (click)="toggleLike()" class="btn btn-primary bg-gradient">
                     <i class="fa fa-heart text-danger"></i>
                 </button>
             </li>
@@ -22,7 +22,10 @@
     <div class="card-body p-1">
       <h6 class="card-title text-center text-body mb-1">
         <i class="fa fa-user me2 text-light"></i>
-        {{member().knownAs}}
+        {{member().knownAs}}, {{member().age}}
+        @if (hasLiked()) {
+            <i class="fa fa-heart ms-2 text-danger"></i>
+        }
       </h6>
       <p class="card-text text-dark text-center">{{member().city}}</p>
     </div>
