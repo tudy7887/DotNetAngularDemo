@@ -13,7 +13,9 @@
                 </button>
             </li>
             <li class="list-inline-item">
-                <button class="btn btn-primary bg-gradient">
+                <button class="btn btn-primary bg-gradient" 
+                        [queryParams]="{tab: 'Messages'}" 
+                        routerLink="/members/{{member().username}}">
                     <i class="fa fa-envelope text-success"></i>
                 </button>
             </li>
