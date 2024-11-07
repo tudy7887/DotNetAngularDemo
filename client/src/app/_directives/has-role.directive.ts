@@ -1,33 +1,22 @@
-import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, inject, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { User } from '../_models/user';
 import { AccountService } from '../_services/account.service';
 
 @Directive({
-  selector: '[appHasRole]'
+  selector: '[appHasRole]',
+  standalone: true
 })
 export class HasRoleDirective implements OnInit {
   @Input() appHasRole: string[] = [];
-  user: User | null =  null;
-
-  constructor(private viewContainerRef: ViewContainerRef, 
-    private templateRef: TemplateRef<any>, 
-    private accountService: AccountService) {
-      this.accountService.currentUser$.pipe(take(1)).subscribe(user => {
-        this.user = user;
-      })
-     }
+  private accountService = inject(AccountService);
+  private viewContainerRef = inject(ViewContainerRef);
+  private templateRef = inject(TemplateRef);
 
   ngOnInit(): void {
-    // clear view if no roles
-    if (!this.user?.roles || this.user == null) {
-      this.viewContainerRef.clear();
-      return;
-    }
-
-    if (this.user?.roles.some(r  => this.appHasRole.includes(r))) {
+    if(this.accountService.roles().some((r:string) => this.appHasRole.includes(r))){
       this.viewContainerRef.createEmbeddedView(this.templateRef);
-    } else {
+    } else{
       this.viewContainerRef.clear();
     }
   }
