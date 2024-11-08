@@ -29,7 +29,7 @@ public class Seed
 
         foreach (var user in users)
         {
-            user.UserName = user.UserName.ToLower();
+            user.UserName = user.UserName!.ToLower();
             await userManager.CreateAsync(user, "Zxcv!234");
             await userManager.AddToRoleAsync(user, "Member");
         }

@@ -8,6 +8,7 @@ import { UserParams } from '../_models/userParams';
 import { AccountService } from './account.service';
 import { PaginatedResult } from '../_models/pagination';
 import { setPaginatedResponse, setPaginationHeaders } from './paginationHelper';
+import { tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class MembersService {
   private http = inject(HttpClient);
   baseUrl = environment.apiUrl;
   //private presence = inject(PresenceService);
+  members = signal<Member[]>([]);
   private accountService = inject(AccountService);
   user = this.accountService.currentUser();
   memberCache = new Map();
@@ -65,32 +67,32 @@ export class MembersService {
     return this.http.get<Member>(this.baseUrl + 'users/' + username);
   }
 
-  updateMember(member: Member) {
-    // return this.http.put(this.baseUrl + 'users', member).pipe(tap(() => {
-    //   this.members.update(members => 
-    //                       members.map(m => m.username === member.username ? member : m))
-    // }));
+  updateMember(member: Member){
+    return this.http.put(this.baseUrl + 'users', member).pipe(tap(() => {
+      this.members.update(members => 
+                          members.map(m => m.username === member.username ? member : m))
+    }));
   }
 
-  setMainPhoto(photo: Photo) {
-    // return this.http.put(this.baseUrl + 'users/set-main-photo/' + photo.id, {}).pipe(tap(() => {
-    //   this.members.update(members => members.map(m => {
-    //     if(m.photos.includes(photo)){
-    //       m.photoUrl = photo.url;
-    //     }
-    //     return m;
-    //   }))
-    // }));
+  setMainPhoto(photo: Photo){
+    return this.http.put(this.baseUrl + 'users/set-main-photo/' + photo.id, {}).pipe(tap(() => {
+      this.members.update(members => members.map(m => {
+        if(m.photos.includes(photo)){
+          m.photoUrl = photo.url;
+        }
+        return m;
+      }))
+    }));
   }
 
-  deletePhoto(photo: Photo) {
-    // return this.http.delete(this.baseUrl + 'users/delete-photo/' + photo.id, {}).pipe(tap(() => {
-    //   this.members.update(members => members.map(m => {
-    //     if(m.photos.includes(photo)){
-    //       m.photos = m.photos.filter(p => p.id != photo.id);
-    //     }
-    //     return m;
-    //   }))
-    // }));;
+  deletePhoto(photo: Photo){
+    return this.http.delete(this.baseUrl + 'users/delete-photo/' + photo.id, {}).pipe(tap(() => {
+      this.members.update(members => members.map(m => {
+        if(m.photos.includes(photo)){
+          m.photos = m.photos.filter(p => p.id != photo.id);
+        }
+        return m;
+      }))
+    }));;
   }
 }

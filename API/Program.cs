@@ -10,10 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddControllers();
-builder.Services.AddCors();
 builder.Services.AddIdentityServices(builder.Configuration);
-builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -22,6 +19,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseCors(x => x.AllowAnyHeader()
                   .AllowAnyMethod()
+                  .AllowCredentials()
                   .WithOrigins("http://localhost:4200", "https://localhost:4200"));
 
 app.UseAuthentication();
@@ -30,9 +28,9 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.MapControllers();
-// app.MapHub<PresenceHub>("hubs/presence");
-// app.MapHub<MessageHub>("hubs/message");
-// app.MapFallbackToController("Index", "Fallback");
+app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<MessageHub>("hubs/message");
+//app.MapFallbackToController("Index", "Fallback");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
